@@ -1,0 +1,23 @@
+{% extends 'flatpages/index.html' %}
+
+{% block title %}
+    Пост информация
+{% endblock title %}
+
+{% block auth %}
+<!--    {% if user.is_authenticated %}-->
+<!--            <button onclick="window.location.href='http://localhost:8000/accounts/logout'">Logout</button>-->
+<!--    {% else %}-->
+<!--            <button onclick="window.location.href='http://localhost:8000/accounts/login'">Login</button>-->
+<!--    {% endif %}-->
+{% endblock auth %}
+
+{% block content %}
+    <h1>Пост информация</h1>
+    <hr>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Сохранить" />
+    </form>
+{% endblock content %}

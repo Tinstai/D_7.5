@@ -1,0 +1,97 @@
+{% extends 'flatpages/index.html' %}
+
+{% load custom_filter1 %}
+{% load custom_filter2 %}
+{% load custom_filter3 %}
+{% load custom_tags %}
+
+{% block title %}
+    NewsPortal
+{% endblock title %}
+
+{% block auth %}
+    {% if user.is_authenticated %}
+            <button onclick="window.location.href='http://localhost:8000/accounts/logout'">Logout</button>
+    {% else %}
+            <button onclick="window.location.href='http://localhost:8000/accounts/login'">Login</button>
+    {% endif %}
+{% endblock auth %}
+
+{% block sub %}
+    {% if user.is_authenticated %}
+            <button onclick="window.location.href='http://localhost:8000/subscriptions'">Subscribe</button>
+    {% endif %}
+{% endblock sub %}
+
+{% block allpost %}
+    {{news|length}}
+{% endblock allpost %}
+
+{% block content %}
+
+    <hr>
+    <h2>Новости</h2>
+    <hr>
+
+    {% if news %}
+
+        {% for info in news %}
+
+            {% if info.article_or_news == "NW" %}
+
+                {% if perms.Posts.add_post %}
+                    <a href="{% url 'news_create' %}">Добавить</a>
+                {% endif %}
+
+                <table class="editorDemoTable" style="margin-left: auto; margin-right: auto;">
+                    <tbody>
+                        <tr>
+                            <td><strong>Заголовок</strong></td>
+                            <td><strong>Дата публикации</strong></td>
+                            <td><strong>Содержание</strong></td>
+
+                            {% if perms.Posts.change_post or perms.Posts.delete_post %}
+                                <td>Действия</td>
+                            {% endif %}
+
+                        </tr>
+
+                        <tr>
+                            <td>{{ info.header|censor|truncatechars:10 }}</td>
+                            <td>{{ info.datetime|post_time }}</td>
+                            <td><h5>{{ info.text|censor|truncatechars:20 }}</h5></td>
+
+                            <td>
+                                {% if perms.Posts.change_post %}
+                                    <a href="{% url 'news_edit' pk=info.id %}">Изменить</a>
+                                {% endif %}
+                                {% if perms.Posts.delete_post %}
+                                    <a href="{% url 'news_delete' info.id %}">Удалить</a>
+                                {% endif %}
+                            </td>
+
+                        </tr>
+                    </tbody>
+                </table>
+                <hr>
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <h2>Постов нет (👉ﾟヮﾟ)👉</h2>
+    {% endif %}
+
+    <span class="current">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+    </span>
+
+    {% if page_obj.has_previous %}
+        <a href="?{% url_replace page=1 %}"> &laquo;</a>
+        <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+    {% endif %}
+
+    {% if page_obj.has_next %}
+        <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+        <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }} &raquo;</a>
+    {% endif %}
+
+{% endblock content %}

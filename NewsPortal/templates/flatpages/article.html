@@ -1,0 +1,36 @@
+{% extends 'flatpages/index.html' %}
+
+{% load custom_filter2 %}
+{% load custom_filter3 %}
+
+{% block title %}
+    NewsPortal
+{% endblock title %}
+
+{% block auth %}
+    {% if user.is_authenticated %}
+            <button onclick="window.location.href='http://localhost:8000/accounts/logout'">Logout</button>
+    {% else %}
+            <button onclick="window.location.href='http://localhost:8000/accounts/login'">Login</button>
+    {% endif %}
+{% endblock auth %}
+
+{% block sub %}
+    {% if user.is_authenticated %}
+            <button onclick="window.location.href='http://localhost:8000/subscriptions'">Subscribe</button>
+    {% endif %}
+{% endblock sub %}
+
+{% block content %}
+
+    {% if article.article_or_news == "AT" %}
+        <h1>{{ article.header|censor }}</h1>
+        <hr>
+        <h5>{{ article.datetime|post_time }}</h5>
+        <h5>{{ article.text|censor }}</h5>
+        <hr>
+    {% else %}
+        <h2>Нет статей (👉ﾟヮﾟ)👉</h2>
+    {% endif %}
+
+{% endblock content %}
